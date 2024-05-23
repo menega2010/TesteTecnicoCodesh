@@ -1,0 +1,29 @@
+services:
+  database:
+    image: postgres
+    container_name: database_postgres
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=secretkey
+      - POSTGRES_DB=mydatabase
+    volumes:
+      - pgdata:/data/postgres
+
+  # app:
+  #   build: .
+  #   container_name: ajusta_ponto_api_app
+  #   ports:
+  #     - 5000:5000
+  #   volumes:
+  #     - .:/usr/app
+  #   links:
+  #     - database
+  #   depends_on:
+  #     - database
+
+volumes:
+  pgdata:
+    driver: local
