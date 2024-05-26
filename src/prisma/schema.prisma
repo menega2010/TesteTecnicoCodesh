@@ -16,5 +16,28 @@ model tab_user {
 
   createdAt String     @map("created_at") @db.VarChar(32)
   updatedAt String?    @map("updated_at") @db.VarChar(32)
+  favorites  tab_favorite[] 
+  history  tab_history[] 
 }
+
+model tab_favorite {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  pronom    String
+  createdAt String   @map("created_at") @db.VarChar(32)
+  updatedAt String?  @map("updated_at") @db.VarChar(32)
+  user      tab_user @relation(fields: [userId], references: [id]) // Define a relação com tab_user
+  @@index([userId]) // Cria um índice em userId
+}
+
+model tab_history {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  pronom    String
+  createdAt String   @map("created_at") @db.VarChar(32)
+  updatedAt String?  @map("updated_at") @db.VarChar(32)
+  user      tab_user @relation(fields: [userId], references: [id]) // Define a relação com tab_user
+  @@index([userId]) // Cria um índice em userId
+}
+
 

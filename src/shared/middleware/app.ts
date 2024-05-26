@@ -1,5 +1,6 @@
 import cors from "cors";
 import express, { Application } from "express";
+import dictionaryRouter from "../../routes/dictionary.routes";
 import userRouter from "../../routes/user.routes";
 
 export class App {
@@ -42,5 +43,6 @@ export class App {
   private configureRoutes(): void {
     // Configuração das rotas
     this.express.use("/user", userRouter);
+    this.express.use("/dictionary", dictionaryRouter);
   }
 }
