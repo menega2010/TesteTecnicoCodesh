@@ -1,6 +1,8 @@
 import cors from "cors";
 import express, { Application } from "express";
 import dictionaryRouter from "../../routes/dictionary.routes";
+import favoriteRouter from "../../routes/favorite.routes";
+import rootRouter from "../../routes/fullstackchalenge.routes";
 import userRouter from "../../routes/user.routes";
 
 export class App {
@@ -44,5 +46,7 @@ export class App {
     // Configuração das rotas
     this.express.use("/user", userRouter);
     this.express.use("/dictionary", dictionaryRouter);
+    this.express.use("/favorite", favoriteRouter);
+    this.express.use("/", rootRouter);
   }
 }

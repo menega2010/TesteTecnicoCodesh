@@ -1,4 +1,5 @@
 import axios from "axios";
+import { HistoryRepositoryInterface } from "../interface/InterfaceRepository/HistoryREpositoryInterface";
 
 interface SynonymResponse {
   meanings: {
@@ -10,9 +11,20 @@ interface SynonymResponse {
 
 export class DictionaryService {
   private apiUrl: string;
-
+  private historyInterface: HistoryRepositoryInterface;
   constructor() {
     this.apiUrl = "https://api.dictionaryapi.dev/api/v2/entries/en";
+  }
+
+  public async fetchWord(word: string): Promise<any> {
+    try {
+      const response = await axios.get(
+        `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`
+      );
+      return response.data;
+    } catch (error) {
+      throw new Error(`Erro ao buscar a palavra: ${error.message}`);
+    }
   }
 
   public async fetchSynonyms(word: string): Promise<string[]> {
@@ -26,6 +38,7 @@ export class DictionaryService {
 
       data.forEach((entry) => {
         entry.meanings.forEach((meaning) => {
+          //
           meaning.definitions.forEach((definition) => {
             if (definition.synonyms) {
               synonyms.push(...definition.synonyms);

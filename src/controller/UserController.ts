@@ -6,6 +6,78 @@ import { UserService } from "../service/UserService";
 import { JWTService } from "../shared/services";
 
 export default {
+  async getProfile(req: Request, resp: Response): Promise<Response> {
+    try {
+      const userId = req.headers["idUsuario"] as string;
+
+      if (!userId) {
+        return resp
+          .status(400)
+          .json({ message: "ID do usuário é obrigatório" });
+      }
+      const userService = new UserService(new UserRepository());
+
+      const userProfile = await userService.getUserProfile(userId);
+
+      return resp.status(200).json(userProfile);
+    } catch (error) {
+      console.error("Erro ao obter perfil do usuário:", error);
+      return resp.status(500).json({
+        message: "Erro ao obter perfil do usuário",
+        error: error.message,
+      });
+    }
+  },
+
+  async getHistory(req: Request, resp: Response): Promise<Response> {
+    try {
+      const userId = req.headers["idUsuario"] as string;
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 10;
+
+      if (!userId) {
+        return resp
+          .status(400)
+          .json({ message: "ID do usuário é obrigatório" });
+      }
+      const userService = new UserService(new UserRepository());
+      const history = await userService.getUserHistory(userId, page, limit);
+
+      return resp.status(200).json(history);
+    } catch (error) {
+      console.error("Erro ao obter histórico do usuário:", error);
+      return resp.status(500).json({
+        message: "Erro ao obter histórico do usuário",
+        error: error.message,
+      });
+    }
+  },
+
+  async getFavorites(req: Request, resp: Response): Promise<Response> {
+    try {
+      const userId = req.headers["idUsuario"] as string;
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 10;
+
+      if (!userId) {
+        return resp
+          .status(400)
+          .json({ message: "ID do usuário é obrigatório" });
+      }
+      const userService = new UserService(new UserRepository());
+
+      const favorites = await userService.getUserFavorites(userId, page, limit);
+
+      return resp.status(200).json(favorites);
+    } catch (error) {
+      console.error("Erro ao obter favoritos do usuário:", error);
+      return resp.status(500).json({
+        message: "Erro ao obter favoritos do usuário",
+        error: error.message,
+      });
+    }
+  },
+
   async post(req: Request, resp: Response): Promise<Response> {
     try {
       const { name, lastName, password, phone } = req.body as UserDTO;

@@ -31,6 +31,20 @@ export class UserRepository implements UserRepositoryInterface {
     }
   }
 
+  public async findById(userId: string): Promise<UserDTO> {
+    const user = await prismaClient.tab_user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new Error("Usuário não encontrado");
+    }
+
+    const { id, name, lastName, password, phone } = user;
+
+    return { id, name, lastName, password, phone };
+  }
+
   public async authUser(username: string): Promise<UserDTO | null> {
     try {
       const user = await prismaClient.tab_user.findFirst({

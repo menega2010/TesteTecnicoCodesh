@@ -1,10 +1,29 @@
 import { UserRepositoryInterface } from "../interface/InterfaceRepository/UserRepositoryInterface";
-import { UserServiceInterface } from "../interface/InterfaceService/UserServiceInterface";
 import { UserDTO } from "../model/DTO/UserDTO";
+import { FavoriteRepository } from "../repository/FavoriteRepository";
+import { HistoryRepository } from "../repository/HistoryRepository";
 import { PasswordCrypto } from "../shared/services";
 
-export class UserService implements UserServiceInterface {
-  constructor(private readonly userRepository: UserRepositoryInterface) {}
+export class UserService {
+  private readonly historyRepository: HistoryRepository;
+  private readonly favoriteRepository: FavoriteRepository;
+
+  constructor(private readonly userRepository: UserRepositoryInterface) {
+    this.historyRepository = new HistoryRepository();
+    this.favoriteRepository = new FavoriteRepository();
+  }
+
+  public async getUserFavorites(userId: string, page: number, limit: number) {
+    const { results, totalDocs, totalPages, hasNext, hasPrev } =
+      await this.favoriteRepository.findFavoritesByUserId(userId, page, limit);
+    return { results, totalDocs, page, totalPages, hasNext, hasPrev };
+  }
+
+  public async getUserHistory(userId: string, page: number, limit: number) {
+    const { results, totalDocs, totalPages, hasNext, hasPrev } =
+      await this.historyRepository.findHistoryByUserId(userId, page, limit);
+    return { results, totalDocs, page, totalPages, hasNext, hasPrev };
+  }
 
   public async postCreateUser({
     name,
@@ -49,5 +68,9 @@ export class UserService implements UserServiceInterface {
       console.error("Erro ao autenticar usuário:", error);
       throw new Error("Erro ao autenticar usuário: " + error.message);
     }
+  }
+
+  public async getUserProfile(userId: string): Promise<UserDTO> {
+    return await this.userRepository.findById(userId);
   }
 }
